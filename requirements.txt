@@ -1,0 +1,7 @@
+numpy
+skyfield
+plotly
+flask
+pyyaml
+pytest
+matplotlib 

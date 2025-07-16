@@ -53,6 +53,8 @@ def calculate_path_loss(range_km, frequency_hz):
     Returns:
         Path loss in dB
     """
+    if range_km <= 0:
+        raise ValueError("Range must be positive and non-zero for path loss calculation.")
     range_m = range_km * 1000
     # FSPL = 20*log10(d) + 20*log10(f) + 20*log10(4π/c)
     path_loss = (20 * np.log10(range_m) + 

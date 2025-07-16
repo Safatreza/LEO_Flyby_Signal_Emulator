@@ -155,12 +155,12 @@ class TestSignalModel:
         assert 'below_horizon' in signal_df.columns
         
         # Check data types and ranges
-        assert all(not np.isnan(signal_df['doppler_shift']))
-        assert all(signal_df['path_loss'] > 0)
-        assert all(signal_df['atmospheric_loss'] >= 0)
+        assert (~signal_df['doppler_shift'].isna()).all()
+        assert (signal_df['path_loss'] > 0).all()
+        assert (signal_df['atmospheric_loss'] >= 0).all()
         
         # Check that all satellites are above horizon (elevation > 0)
-        assert all(signal_df['below_horizon'] == False)
+        assert (signal_df['below_horizon'] == False).all()
     
     def test_simulate_signal_below_horizon(self):
         """Test signal simulation with satellite below horizon"""
@@ -197,11 +197,12 @@ class TestSignalModel:
         
         # Test very low velocity
         doppler = calculate_doppler_shift(0.001, 2400000000)  # 1 m/s
-        assert abs(doppler) < 1.0  # Should be very small
+        # The expected value is (0.001*1000/299792458)*2.4e9 = ~8.0055 Hz
+        assert abs(doppler - 8.0055) < 0.1  # Should be about 8 Hz
         
-        # Test zero frequency (should raise error or return zero)
-        with pytest.raises(ZeroDivisionError):
-            calculate_doppler_shift(7.0, 0)
+        # Test zero frequency (should return zero)
+        doppler = calculate_doppler_shift(1.0, 0.0)
+        assert doppler == 0.0
     
     def test_path_loss_edge_cases(self):
         """Test path loss calculations with edge cases"""

@@ -201,7 +201,7 @@ def plot_antenna_tracking(results):
     valid_errors = [err for err in pointing_errors if err < 999]
     if valid_errors:
         plt.hist(valid_errors, bins=20, alpha=0.7, color='green', edgecolor='black')
-            plt.axvline(x=CONFIG['antenna']['beamwidth_deg']/2, color='r', linestyle='--',
+        plt.axvline(x=CONFIG['antenna']['beamwidth_deg']/2, color='r', linestyle='--',
                     alpha=0.5, label=f'Beamwidth/2 ({CONFIG["antenna"]["beamwidth_deg"]/2:.1f}°)')
         plt.xlabel('Pointing Error (degrees)')
         plt.ylabel('Frequency')

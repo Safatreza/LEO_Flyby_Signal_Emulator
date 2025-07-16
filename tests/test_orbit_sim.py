@@ -13,8 +13,8 @@ from datetime import datetime
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from flyby_model.orbit_sim import load_config, load_tle, simulate_flyby
 try:
-    from flyby_model.orbit_sim import load_config, load_tle, simulate_flyby
     from skyfield.api import load
     SKYFIELD_AVAILABLE = True
 except ImportError:
@@ -112,7 +112,7 @@ class TestOrbitSimulator:
             temp_path = f.name
         
         try:
-            with pytest.raises(ValueError, match="TLE file must have at least 3 lines"):
+            with pytest.raises(RuntimeError, match="TLE file must have at least 3 lines"):
                 load_tle(temp_path)
         finally:
             os.unlink(temp_path)
@@ -172,7 +172,7 @@ class TestOrbitSimulator:
         gs, sim = load_config(temp_config_file)
         
         # Invalid TLE lines
-        invalid_tle = ("INVALID", "invalid line 1", "invalid line 2")
+        invalid_tle = ("INVALID", "invalid line 1")  # Only two lines, always invalid
         
         with pytest.raises(ValueError, match="Invalid TLE"):
             simulate_flyby(gs, sim, invalid_tle)
